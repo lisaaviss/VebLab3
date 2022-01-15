@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://primefaces.org/ui ">
+
+<h:head>
+    <link rel="stylesheet" type="text/css" href="resources/styles/style.css"/>
+    <title>WebLab 3</title>
+    <h:outputStylesheet library="styles" name="style.css"/>
+</h:head>
+
+<h:body onload="canvasInit(2) ; chooseX()">
+    <body>
+    <div class="block">
+        <div id="formBlock">
+            <h:form id="sendForm">
+                <div>
+               <span>
+                <h:outputLabel for="x_value">Chosse X:  </h:outputLabel>
+                <h:inputText id="x_value" styleClass="x_Val" maxlength="6" value="#{pointsBean.point.x}">
+                    <f:validateRequired/>
+                    <f:validateDoubleRange minimum="-3" maximum="3"/>
+                </h:inputText>
+                </span>
+                </div>
+                <div>
+               <span>
+                <h:outputLabel for="y_value">Chosse Y:  </h:outputLabel>
+                <h:inputText id="y_value" styleClass="y_Val" maxlength="6" value="#{pointsBean.point.y}">
+                    <f:validateRequired/>
+                    <f:validateDoubleRange minimum="-5" maximum="3"/>
+                </h:inputText>
+                </span>
+                </div>
+                <div>
+                    <h:outputLabel for="r_value">Choose R: </h:outputLabel>
+                    <h:selectOneRadio id="r_value" layout="lineDirection" value="#{pointsBean.point.r}"
+                                      onchange="press()">
+                        <f:selectItem itemLabel="1" itemValue="1"/>
+                        <f:selectItem itemLabel="1.5" itemValue="1.5"/>
+                        <f:selectItem itemLabel="2" itemValue="2"/>
+                        <f:selectItem itemLabel="2.5" itemValue="2.5"/>
+                        <f:selectItem itemLabel="3" itemValue="3"/>
+                    </h:selectOneRadio>
+                </div>
+                <div>
+                    <h:commandButton styleClass="clickButton" action="#{pointsBean.addPoint}" value="Send"
+                                     onclick="checkX(), checkY()">
+                        <f:ajax execute="@form" render="results" onevent="
+                        (data) => {
+                            if(data.status==='success'){
+                                drawPoint();
+                            }
+                        }
+                        "></f:ajax>
+                    </h:commandButton>
+                </div>
+            </h:form>
+        </div>
+    </div>
+    <div class ="block1">
+        <canvas id="cns" width="310px" height="310px"></canvas>
+    </div>
+
+    <div class="block">
+        <h:dataTable id="results" value="#{pointsBean.points}" var="element">
+            <h:column>
+                <f:facet name="header">X</f:facet>
+                <h:outputText value="#{element.x}">
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Y</f:facet>
+                <h:outputText value="#{element.y}">
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">R</f:facet>
+                <h:outputText value="#{element.r}">
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Result</f:facet>
+                <h:outputText value="#{element.result}">
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Time of sending</f:facet>
+                <h:outputText value="#{element.timeOfSending}">
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Time of executing (ms)</f:facet>
+                <h:outputText value="#{element.timeOfExecuting}">
+                </h:outputText>
+            </h:column>
+        </h:dataTable>
+    </div>
+    <div class="block link-block">
+        <h:link outcome="goToIndex">
+                <b>Back</b>
+        </h:link>
+    </div>
+
+    <div class="fakeBlock">
+        <h:form>
+            <h:inputText class="fakeX" value="#{pointsBean.point.x}"></h:inputText>
+            <h:inputText class="fakeY" value="#{pointsBean.point.y}"></h:inputText>
+            <h:inputText class="fakeR" value="#{pointsBean.point.r}"></h:inputText>
+            <h:commandButton class="fakeButton" action="#{pointsBean.addPoint}">
+                <f:ajax execute="@form" render="results" onevent="
+                (data) => {
+                    if(data.status==='success'){
+                                drawPoint();
+                    }
+                }
+                "/>
+            </h:commandButton>
+        </h:form>
+    </div>
+
+    </body>
+</h:body>
+
+
+<h:outputScript library="js" name="jquery-3.6.0.min.js"/>
+<h:outputScript library="js" name="canvas.js"/>
+<h:outputScript library="js" name="mainJS.js"/>
+</html>
